@@ -1,0 +1,68 @@
+package dw.mvc.rest.services;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import dw.mvc.rest.api.v1.mapper.CustomerMapper;
+import dw.mvc.rest.api.v1.model.CustomerDTO;
+import dw.mvc.rest.model.Customer;
+import dw.mvc.rest.repositories.CustomerRepository;
+import dw.mvc.rest.service.CustomerService;
+import dw.mvc.rest.service.CustomerServiceImpl;
+
+public class CustomerServiceImplTest {
+
+	CustomerService customerService;
+	
+	@Mock
+	CustomerRepository customerRepository;
+	
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+		
+		customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);
+	}
+	
+	@Test
+	public void testGetAllCustomers() {
+		List<Customer> customers = Arrays.asList(new Customer(), new Customer(), new Customer());
+		
+		when(customerRepository.findAll()).thenReturn(customers);
+		
+		List<CustomerDTO> custDTOs = customerService.getAllCustomers();
+		
+		assertEquals(3, custDTOs.size());
+	}
+
+	@Test
+	public void testGetCustomerById() throws Exception {
+		Customer cust = new Customer();
+		cust.setId(1l);
+		cust.setFirstname("dan");
+
+		Optional<Customer> opCust = Optional.of(cust);
+		
+		when(customerRepository.findById(anyLong())).thenReturn(opCust);
+
+		if(!opCust.isPresent()) {
+			throw new Exception("not found");
+		}
+		
+		CustomerDTO customerDTO = customerService.getCustomerById(1l);
+		
+		assertEquals("dan", customerDTO.getFirstname());
+	}
+	
+
+}
