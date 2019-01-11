@@ -31,27 +31,22 @@ public class Bootstrap implements CommandLineRunner {
 
 	private void loadCustomers() {
 		Customer c1 = new Customer();
-		c1.setId(1L);
 		c1.setFirstname("joe");
 		c1.setLastname("schmo");
 		
 		Customer c2 = new Customer();
-		c2.setId(2L);
 		c2.setFirstname("tom");
 		c2.setLastname("brady");
 		
 		Customer c3 = new Customer();
-		c3.setId(3L);
 		c3.setFirstname("phillipe");
 		c3.setLastname("rios");
 		
 		Customer c4 = new Customer();
-		c4.setId(4L);
 		c4.setFirstname("mark");
 		c4.setLastname("stewart");
 		
 		Customer c5 = new Customer();
-		c5.setId(5L);
 		c5.setFirstname("rob");
 		c5.setLastname("gronk");
 		

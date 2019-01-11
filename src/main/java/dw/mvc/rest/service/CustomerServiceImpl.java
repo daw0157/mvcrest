@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 
 import dw.mvc.rest.api.v1.mapper.CustomerMapper;
 import dw.mvc.rest.api.v1.model.CustomerDTO;
+import dw.mvc.rest.controllers.v1.CustomerController;
+import dw.mvc.rest.model.Customer;
 import dw.mvc.rest.repositories.CustomerRepository;
 
 @Service
@@ -41,5 +43,20 @@ public class CustomerServiceImpl implements CustomerService {
 				.map(customerMapper::customerToCustomerDTO)
 				.orElseThrow(RuntimeException::new);
 	}
+
+	@Override
+	public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+		Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+		
+		Customer savedCustomer = customerRepository.save(customer);
+		
+		CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(savedCustomer);
+		
+		returnDTO.setCustomerUrl(CustomerController.BASE_URL + savedCustomer.getId());
+		
+		return returnDTO;
+	}
+	
+	
 
 }

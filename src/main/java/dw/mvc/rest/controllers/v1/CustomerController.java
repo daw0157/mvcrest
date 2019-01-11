@@ -5,9 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import dw.mvc.rest.api.v1.model.CategoryDTO;
 import dw.mvc.rest.api.v1.model.CustomerDTO;
 import dw.mvc.rest.api.v1.model.CustomerListDTO;
 import dw.mvc.rest.service.CustomerService;
@@ -31,11 +32,16 @@ public class CustomerController {
 				new CustomerListDTO(customerService.getAllCustomers()), HttpStatus.OK);
 	}
 	
-	@GetMapping("{id}")
+	@GetMapping("/{id}")
 	public ResponseEntity getCustomerById(@PathVariable String id) {
 		return new ResponseEntity<CustomerDTO>(
 				customerService.getCustomerById(Long.valueOf(id)), HttpStatus.OK);
 		
+	}
+	
+	@PostMapping
+	public ResponseEntity<CustomerDTO> createNewCustomer(@RequestBody CustomerDTO customerDTO) {
+		return new ResponseEntity<CustomerDTO>(customerService.createNewCustomer(customerDTO), HttpStatus.CREATED);
 	}
 
 }

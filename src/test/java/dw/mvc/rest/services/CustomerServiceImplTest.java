@@ -1,5 +1,6 @@
 package dw.mvc.rest.services;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 
 import dw.mvc.rest.api.v1.mapper.CustomerMapper;
 import dw.mvc.rest.api.v1.model.CustomerDTO;
+import dw.mvc.rest.controllers.v1.CustomerController;
 import dw.mvc.rest.model.Customer;
 import dw.mvc.rest.repositories.CustomerRepository;
 import dw.mvc.rest.service.CustomerService;
@@ -64,5 +66,22 @@ public class CustomerServiceImplTest {
 		assertEquals("dan", customerDTO.getFirstname());
 	}
 	
+	@Test
+	public void createNewCustomer() throws Exception {
+		CustomerDTO customerDTO = new CustomerDTO();
+		customerDTO.setFirstname("john");
+		
+		Customer savedCustomer = new Customer();
+		savedCustomer.setFirstname(customerDTO.getFirstname());
+		savedCustomer.setLastname(customerDTO.getLastname());
+		savedCustomer.setId(1L); 
+		
+		when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+		
+		CustomerDTO savedDTO = customerService.createNewCustomer(customerDTO);
+		
+		assertEquals(customerDTO.getFirstname(), savedDTO.getFirstname());
+		assertEquals(CustomerController.BASE_URL + "1", savedDTO.getCustomerUrl());
+	}
 
 }
