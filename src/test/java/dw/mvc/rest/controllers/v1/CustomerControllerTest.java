@@ -18,6 +18,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import static org.mockito.ArgumentMatchers.any;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -95,6 +96,28 @@ public class CustomerControllerTest {
 				.content(AbstractRestControllerTest.asJsonString(customer)))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.firstname", equalTo("jake")))
+			.andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
+	}
+	
+	@Test
+	public void updateCustomer() throws Exception {
+		CustomerDTO customer = new CustomerDTO();
+		customer.setFirstname("jake");
+		customer.setLastname("stone");
+		
+		CustomerDTO returnDTO = new CustomerDTO();
+		returnDTO.setFirstname(customer.getFirstname());
+		returnDTO.setLastname(customer.getLastname());
+		returnDTO.setCustomerUrl("/api/v1/customers/1");
+		
+		when(customerService.saveCustomerById(anyLong(), any(CustomerDTO.class))).thenReturn(returnDTO);
+		
+		mockMvc.perform(put(CustomerController.BASE_URL + "/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(AbstractRestControllerTest.asJsonString(customer)))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.firstname", equalTo("jake")))
+			.andExpect(jsonPath("$.lastname", equalTo("stone")))
 			.andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/1")));
 	}
 }

@@ -1,6 +1,7 @@
 package dw.mvc.rest.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -41,19 +42,30 @@ public class CustomerServiceImpl implements CustomerService {
 	public CustomerDTO getCustomerById(Long id) {
 		return customerRepository.findById(id)
 				.map(customerMapper::customerToCustomerDTO)
+				.map(customerDTO -> {
+					customerDTO.setCustomerUrl(CustomerController.BASE_URL + "/" + id);
+					return customerDTO;
+				})
 				.orElseThrow(RuntimeException::new);
 	}
 
 	@Override
 	public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+		return saveAndReturnDTO(customerMapper.customerDtoToCustomer(customerDTO));
+	}
+
+	@Override
+	public CustomerDTO saveCustomerById(Long id, CustomerDTO customerDTO) {
 		Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+		customer.setId(id);
+		return saveAndReturnDTO(customer);
 		
+	}
+	
+	private CustomerDTO saveAndReturnDTO(Customer customer) {
 		Customer savedCustomer = customerRepository.save(customer);
-		
 		CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(savedCustomer);
-		
-		returnDTO.setCustomerUrl(CustomerController.BASE_URL + savedCustomer.getId());
-		
+		returnDTO.setCustomerUrl(CustomerController.BASE_URL + "/" + savedCustomer.getId());
 		return returnDTO;
 	}
 	

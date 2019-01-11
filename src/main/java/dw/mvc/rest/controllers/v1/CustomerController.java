@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -27,13 +28,13 @@ public class CustomerController {
 	}
 	
 	@GetMapping
-	public ResponseEntity getAllCustomers() {
+	public ResponseEntity<CustomerListDTO> getAllCustomers() {
 		return new ResponseEntity<CustomerListDTO>(
 				new CustomerListDTO(customerService.getAllCustomers()), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity getCustomerById(@PathVariable String id) {
+	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable String id) {
 		return new ResponseEntity<CustomerDTO>(
 				customerService.getCustomerById(Long.valueOf(id)), HttpStatus.OK);
 		
@@ -42,6 +43,13 @@ public class CustomerController {
 	@PostMapping
 	public ResponseEntity<CustomerDTO> createNewCustomer(@RequestBody CustomerDTO customerDTO) {
 		return new ResponseEntity<CustomerDTO>(customerService.createNewCustomer(customerDTO), HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable String id, @RequestBody CustomerDTO customerDTO) {
+		return new ResponseEntity<CustomerDTO>(
+				customerService.saveCustomerById(Long.valueOf(id), customerDTO), HttpStatus.OK);
+		
 	}
 
 }
