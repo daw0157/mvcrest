@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,9 +35,9 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable String id) {
+	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
 		return new ResponseEntity<CustomerDTO>(
-				customerService.getCustomerById(Long.valueOf(id)), HttpStatus.OK);
+				customerService.getCustomerById(id), HttpStatus.OK);
 		
 	}
 	
@@ -46,9 +47,16 @@ public class CustomerController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable String id, @RequestBody CustomerDTO customerDTO) {
+	public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
 		return new ResponseEntity<CustomerDTO>(
-				customerService.saveCustomerById(Long.valueOf(id), customerDTO), HttpStatus.OK);
+				customerService.saveCustomerById(id, customerDTO), HttpStatus.OK);
+		
+	}
+	
+	@PatchMapping("/{id}")
+	public ResponseEntity<CustomerDTO> patchCustomerById(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
+		return new ResponseEntity<CustomerDTO>(
+				customerService.patchCustomer(id, customerDTO), HttpStatus.OK);
 		
 	}
 
