@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import dw.mvc.rest.api.v1.mapper.CustomerMapper;
 import dw.mvc.rest.api.v1.model.CustomerDTO;
 import dw.mvc.rest.controllers.v1.CustomerController;
+import dw.mvc.rest.exceptions.ResourceNotFoundException;
 import dw.mvc.rest.model.Customer;
 import dw.mvc.rest.repositories.CustomerRepository;
 
@@ -32,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
 				.stream()
 				.map(customer -> {
 					CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
-					customerDTO.setCustomerUrl("/api/v1/customers/" + customer.getId());
+					customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
 					return customerDTO;
 				})
 				.collect(Collectors.toList());
@@ -43,10 +44,10 @@ public class CustomerServiceImpl implements CustomerService {
 		return customerRepository.findById(id)
 				.map(customerMapper::customerToCustomerDTO)
 				.map(customerDTO -> {
-					customerDTO.setCustomerUrl(CustomerController.BASE_URL + "/" + id);
+					customerDTO.setCustomerUrl(getCustomerUrl(id));
 					return customerDTO;
 				})
-				.orElseThrow(RuntimeException::new);
+				.orElseThrow(ResourceNotFoundException::new);
 	}
 
 	@Override
@@ -65,7 +66,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private CustomerDTO saveAndReturnDTO(Customer customer) {
 		Customer savedCustomer = customerRepository.save(customer);
 		CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(savedCustomer);
-		returnDTO.setCustomerUrl(CustomerController.BASE_URL + "/" + savedCustomer.getId());
+		returnDTO.setCustomerUrl(getCustomerUrl(savedCustomer.getId()));
 		return returnDTO;
 	}
 
@@ -81,10 +82,10 @@ public class CustomerServiceImpl implements CustomerService {
 			}
 			
 			CustomerDTO returnDTO = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
-			returnDTO.setCustomerUrl(CustomerController.BASE_URL + "/" + id);
+			returnDTO.setCustomerUrl(getCustomerUrl(id));
 			
 			return returnDTO;
-		}).orElseThrow(RuntimeException::new);
+		}).orElseThrow(ResourceNotFoundException::new);
 	}
 
 	@Override
@@ -92,4 +93,7 @@ public class CustomerServiceImpl implements CustomerService {
 		customerRepository.deleteById(id);
 	}
 	
+	private String getCustomerUrl(Long id) {
+		return CustomerController.BASE_URL + "/" + id;
+	}
 }

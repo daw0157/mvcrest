@@ -27,6 +27,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import dw.mvc.rest.api.v1.model.CustomerDTO;
+import dw.mvc.rest.exceptions.ResourceNotFoundException;
 import dw.mvc.rest.service.CustomerService;
 
 public class CustomerControllerTest {
@@ -43,7 +44,9 @@ public class CustomerControllerTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(controller)
+				.setControllerAdvice(new RestResponseEntityExceptionHandler())
+				.build();
 	}
 	
 	@Test
@@ -79,6 +82,16 @@ public class CustomerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo("name")));
+	}
+	
+	@Test
+	public void testGetCustomerByIdNotFound() throws Exception{
+       
+		when(customerService.getCustomerById(anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(get(CustomerController.BASE_URL + "/222")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
 	}
 
 	@Test
