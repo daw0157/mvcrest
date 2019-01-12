@@ -3,6 +3,8 @@ package dw.mvc.rest.services;
 import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -101,5 +103,14 @@ public class CustomerServiceImplTest {
 		assertEquals(customerDTO.getFirstname(), savedDTO.getFirstname());
 		assertEquals(CustomerController.BASE_URL + "/1", savedDTO.getCustomerUrl());
 	}
-
+	
+	@Test
+	public void testDeleteCustomerById() throws Exception {
+		Long id = 1L;
+		
+		customerRepository.deleteById(id);
+		
+		verify(customerRepository, times(1)).deleteById(anyLong());
+	}
+	
 }

@@ -3,6 +3,7 @@ package dw.mvc.rest.controllers.v1;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,6 +58,13 @@ public class CustomerController {
 	public ResponseEntity<CustomerDTO> patchCustomerById(@PathVariable Long id, @RequestBody CustomerDTO customerDTO) {
 		return new ResponseEntity<CustomerDTO>(
 				customerService.patchCustomer(id, customerDTO), HttpStatus.OK);
+		
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<CustomerDTO> deleteCustomerById(@PathVariable Long id) {
+		customerService.deleteCustomerById(id);
+		return new ResponseEntity(HttpStatus.OK);
 		
 	}
 
