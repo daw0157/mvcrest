@@ -1,12 +1,16 @@
 package dw.mvc.rest.bootstrap;
 
+import java.math.BigDecimal;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import dw.mvc.rest.model.Category;
 import dw.mvc.rest.model.Customer;
+import dw.mvc.rest.model.Product;
 import dw.mvc.rest.repositories.CategoryRepository;
 import dw.mvc.rest.repositories.CustomerRepository;
+import dw.mvc.rest.repositories.ProductRepository;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -14,19 +18,25 @@ public class Bootstrap implements CommandLineRunner {
 	private CategoryRepository categoryRepository;
 	
 	private CustomerRepository customerRepository;
+	
+	private ProductRepository productRepository;
 
-	public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+	public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository,
+			ProductRepository productRepository) {
 		super();
 		this.categoryRepository = categoryRepository;
 		this.customerRepository = customerRepository;
+		this.productRepository = productRepository;
 	}
 
 	@Override
 	public void run(String... args) throws Exception {
 		loadCategories();
 		loadCustomers();
+		loadProducts();
 		System.out.println("Categories: " + categoryRepository.count());
 		System.out.println("Customers: " + customerRepository.count());
+		System.out.println("Products: " + productRepository.count());
 	}
 
 	private void loadCustomers() {
@@ -75,6 +85,35 @@ public class Bootstrap implements CommandLineRunner {
 		categoryRepository.save(exotic);
 		categoryRepository.save(nuts);
 	}
-
+	
+	private void loadProducts() {
+		Product bananas = new Product();
+		bananas.setName("Bananas");
+		bananas.setPrice(BigDecimal.valueOf(1.99));
+		bananas.setCategory(categoryRepository.findByName("Fruits"));
+		Product oranges = new Product();
+		oranges.setName("Oranges");
+		oranges.setCategory(categoryRepository.findByName("Fruits"));
+		oranges.setPrice(BigDecimal.valueOf(1.50));
+		Product pineapples = new Product();
+		pineapples.setName("Pineapples");
+		pineapples.setPrice(BigDecimal.valueOf(4.99));
+		pineapples.setCategory(categoryRepository.findByName("Dried"));
+		Product apples = new Product();
+		apples.setName("Apples");
+		apples.setPrice(BigDecimal.valueOf(0.99));
+		apples.setCategory(categoryRepository.findByName("Fresh"));
+		Product cranberries = new Product();
+		cranberries.setName("Cranberries");
+		cranberries.setPrice(BigDecimal.valueOf(3.50));
+		cranberries.setCategory(categoryRepository.findByName("Nuts"));
+		
+		productRepository.save(bananas);
+		productRepository.save(oranges);
+		productRepository.save(pineapples);
+		productRepository.save(apples);
+		productRepository.save(cranberries);
+		
+	}
 	
 }

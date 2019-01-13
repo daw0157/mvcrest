@@ -5,7 +5,6 @@ import static junit.framework.TestCase.assertNotNull;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -22,6 +21,7 @@ import dw.mvc.rest.bootstrap.Bootstrap;
 import dw.mvc.rest.model.Customer;
 import dw.mvc.rest.repositories.CategoryRepository;
 import dw.mvc.rest.repositories.CustomerRepository;
+import dw.mvc.rest.repositories.ProductRepository;
 import dw.mvc.rest.service.CustomerService;
 import dw.mvc.rest.service.CustomerServiceImpl;
 
@@ -35,6 +35,9 @@ public class CustomerServiceImplIT {
 	@Autowired
 	CategoryRepository categoryRepository;
 	
+	@Autowired
+	ProductRepository productRepository;
+	
 	CustomerService customerService;
 	
 	@Before
@@ -42,7 +45,7 @@ public class CustomerServiceImplIT {
 		System.out.println("Loading Customer Data");
 		System.out.println(customerRepository.findAll().size());
 		
-		Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository);
+		Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository, productRepository);
 		bootstrap.run();
 		
 		customerService = new CustomerServiceImpl(customerRepository, CustomerMapper.INSTANCE);

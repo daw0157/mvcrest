@@ -1,13 +1,21 @@
 package dw.mvc.rest.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-@Data
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 @Entity
 public class Category {
 
@@ -15,5 +23,9 @@ public class Category {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	
+	/*@OneToMany(cascade = CascadeType.ALL, mappedBy="category")
+	@JsonManagedReference
+	private List<Product> products;*/
 	
 }
